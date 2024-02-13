@@ -1,5 +1,6 @@
 <template>
   <q-page :class="`flex column relative-position ${isNight && 'night'}`">
+    <!-- Location block -->
     <div class="col q-pt-lg q-px-md search">
       <q-input
         @keyup.enter="getWeatherByCity"
@@ -25,6 +26,7 @@
       </q-input>
     </div>
 
+    <!-- Block with weather -->
     <template v-if="weatherData">
       <div class="col text-white text-center">
         <img
@@ -70,6 +72,7 @@
       </div>
     </template>
 
+    <!-- Show if no weather data -->
     <template v-else="weatherData">
       <div class="col q-px-sm q-py-lg flex column flex-center">
         <div class="text-h2 text-white text-center">Welcome!</div>
@@ -114,8 +117,6 @@ export default {
       );
     },
     async getWeatherByLocation(latitude, longitude) {
-      console.log("getWeatherByLocation initiated");
-      this.$q.loading.show();
       try {
         const { data } = await axios(this.apiUrl, {
           params: {
@@ -132,7 +133,6 @@ export default {
       this.$q.loading.hide();
     },
     async getWeatherByCity() {
-      console.log("getWeatherByCity initiated");
       this.$q.loading.show();
       try {
         if (this.city) {
