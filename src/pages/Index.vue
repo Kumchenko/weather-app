@@ -119,8 +119,10 @@ export default {
         this.getWeatherByLocation(lat, lon);
       } else {
         navigator.geolocation.getCurrentPosition(
-          ({ coords: { latitude, longitude } }) =>
-            this.getWeatherByLocation(latitude, longitude)
+          ({ coords: { latitude, longitude } }) => {
+            console.log("position: ", { latitude, longitude });
+            this.getWeatherByLocation(latitude, longitude);
+          }
         );
       }
     },
