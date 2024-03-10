@@ -105,16 +105,24 @@ export default {
       city: "",
       weatherData: null,
       apiUrl: "https://api.openweathermap.org/data/2.5/weather",
+      locationApiUrl: "http://ip-api.com/json/",
       apiKey: process.env.API_KEY,
     };
   },
   methods: {
-    getCurrentLocation() {
+    async getCurrentLocation() {
       this.$q.loading.show();
-      navigator.geolocation.getCurrentPosition(
-        ({ coords: { latitude, longitude } }) =>
-          this.getWeatherByLocation(latitude, longitude)
-      );
+      if (this.$q.platform.is.electron) {
+        const {
+          data: { lat, lon },
+        } = await axios.get(this.locationApiUrl);
+        this.getWeatherByLocation(lat, lon);
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          ({ coords: { latitude, longitude } }) =>
+            this.getWeatherByLocation(latitude, longitude)
+        );
+      }
     },
     async getWeatherByLocation(latitude, longitude) {
       try {
@@ -177,7 +185,7 @@ export default {
     },
     isNight() {
       if (this.weatherData) {
-        return this.weatherData.weather.at(0).icon.endsWith("n");
+        return this.weatherData.weather[0].icon.endsWith("n");
       }
       return false;
     },
